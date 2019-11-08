@@ -20,11 +20,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CPPMATH_H_
-#define CPPMATH_H_
+#ifndef CPPMATH_TYPE_VECTOR_H_
+#define CPPMATH_TYPE_VECTOR_H_
+
+#include <cstdlib>
 
 namespace math {
+template <typename T, std::size_t N>
+struct vec;
 
+template <typename T>
+using vec2 = vec<T, 2>;
+template <typename T>
+using vec3 = vec<T, 3>;
+template <typename T>
+using vec4 = vec<T, 4>;
 } // namespace math
 
-#endif  // CPPMATH_H_
+#endif // CPPMATH_TYPE_VECTOR_H_

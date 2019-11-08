@@ -20,11 +20,56 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CPPMATH_H_
-#define CPPMATH_H_
+#ifndef CPPMATH_VEC2_H_
+#define CPPMATH_VEC2_H_
+
+#include "type_vector.h"
 
 namespace math {
+template <typename T>
+struct vec<T, 2> {
+  typedef T value_type;
+  typedef std::size_t length_type;
+  typedef vec<T, 2> type;
 
+  union {
+    T x, r, s;
+  };
+  union {
+    T y, g, t;
+  };
+
+#ifdef CPPMATH_SWIZZLE_FUNCTION
+  /* TODO: Add swizzle function <07-11-19, Arden Rasmussen> */
+#endif
+
+  static constexpr length_type length()
+  {
+    return 2;
+  }
+  T& operator[](const length_type& i)
+  {
+    assert(i >= 0 && i < this->length());
+    switch (i) {
+    default:
+    case 0:
+      return x;
+    case 1:
+      return y;
+    }
+  }
+  const T& operator[](const length_type& i) const
+  {
+    assert(i >= 0 && i < this->length());
+    switch (i) {
+    default:
+    case 0:
+      return x;
+    case 1:
+      return y;
+    }
+  }
+};
 } // namespace math
 
-#endif  // CPPMATH_H_
+#endif // CPPMATH_VEC2_H_

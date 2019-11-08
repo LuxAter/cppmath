@@ -24,7 +24,7 @@ message(STATUS "Build cppmath: ${PROJECT_VERSION}")
 #---------------------------------------------------------------------------------------
 # Compiler config
 #---------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 find_program(CLANG_TIDY_EXEC NAMES clang-tidy)
@@ -34,6 +34,14 @@ if(CLANG_TIDY_EXEC)
 endif()
 if(CPPCHECK_EXEC)
   set(CMAKE_CXX_CPPCHECK ${CPPCHECK_EXEC})
+endif()
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
+  execute_process(COMMAND ${CMAKE_COMMAND}
+    -E
+    copy_if_different
+    ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json)
 endif()
 
 
@@ -85,8 +93,8 @@ find_package(Threads REQUIRED)
 set(CPPMATH_SRCS
   src/cppmath.cpp)
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/cppmath/version.h.in" 
-               "${CMAKE_CURRENT_SOURCE_DIR}/include/cppmath/version.h")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/cppmath/version.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/cppmath/version.h")
 
 if (CPPMATH_BUILD_SHARED)
   if(WIN32)
