@@ -18,7 +18,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
 endif()
 
-project(cppmath VERSION 0.0.0 LANGUAGES CXX)
+
 message(STATUS "Build cppmath: ${PROJECT_VERSION}")
 
 #---------------------------------------------------------------------------------------
