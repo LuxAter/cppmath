@@ -21,20 +21,20 @@
  * SOFTWARE.
  */
 
-#ifndef CPPMATH_VEC2_H_
-#define CPPMATH_VEC2_H_
+#ifndef LINALG_VEC2_H_
+#define LINALG_VEC2_H_
 
 #include <cstdlib>
 #include <stdexcept>
 
-#ifdef CPPMATH_OSTREAM_OPERATOR
+#ifdef LINALG_OSTREAM_OPERATOR
 #include <iostream>
 #endif
 #include "swizzle_functions.h"
 
 #include "vec_base.h"
 
-namespace math {
+namespace linalg {
   template <typename T>
   using vec2 = vec<T, 2>;
 
@@ -48,7 +48,7 @@ namespace math {
     vec(const value_type& x, const value_type& y) : x(x), y(y) {}
     // vec(const value_type&& x, const value_type&& y) : x(x), y(y) {}
 
-// #ifdef CPPMATH_SWIZZLE_FUNCTION
+// #ifdef LINALG_SWIZZLE_FUNCTION
     SWIZZLE_2_2()
     /* TODO: Add swizzle function <07-11-19, Arden Rasmussen> */
 // #endif
@@ -86,13 +86,13 @@ namespace math {
     };
   };
 
-#ifdef CPPMATH_OSTREAM_OPERATOR
+#ifdef LINALG_OSTREAM_OPERATOR
   template <typename T>
   inline std::ostream& operator<<(std::ostream& out, const vec<T, 2>& rhs) {
     return out << '<' << rhs.x << ',' << rhs.y << '>';
   }
 #endif
 
-}  // namespace math
+}  // namespace linalg
 
-#endif  // CPPMATH_VEC2_H_
+#endif  // LINALG_VEC2_H_

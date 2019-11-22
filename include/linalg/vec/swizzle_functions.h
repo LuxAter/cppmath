@@ -21,8 +21,8 @@
  * SOFTWARE.
  */
 
-#ifndef CPPMATH_SWIZZLE_FUNCTIONS_H_
-#define CPPMATH_SWIZZLE_FUNCTIONS_H_
+#ifndef LINALG_SWIZZLE_FUNCTIONS_H_
+#define LINALG_SWIZZLE_FUNCTIONS_H_
 
 #include <cstdlib>
 #include <stdexcept>
@@ -41,7 +41,7 @@
   SWIZZLE_2_BASE(x, y) \
   SWIZZLE_2_BASE(r, g)
 
-namespace math {
+namespace linalg {
   template <typename T, std::size_t N>
   struct vec;
   template <typename T, std::size_t N>
@@ -140,12 +140,12 @@ namespace math {
 
     value_type x, y;
   };
-#ifdef CPPMATH_OSTREAM_OPERATOR
+#ifdef LINALG_OSTREAM_OPERATOR
   template <typename T>
   inline std::ostream& operator<<(std::ostream& out, const swizzle<T, 2>& rhs) {
     return out << '<' << rhs.x << ',' << rhs.y << '>';
   }
 #endif
-}  // namespace math
+}  // namespace linalg
 
-#endif  // CPPMATH_SWIZZLE_FUNCTIONS_H_
+#endif  // LINALG_SWIZZLE_FUNCTIONS_H_

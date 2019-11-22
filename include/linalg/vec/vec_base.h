@@ -21,14 +21,14 @@
  * SOFTWARE.
  */
 
-#ifndef CPPMATH_VEC_BASE_H_
-#define CPPMATH_VEC_BASE_H_
+#ifndef LINALG_VEC_BASE_H_
+#define LINALG_VEC_BASE_H_
 
 #include <cstdlib>
 
-namespace math {
+namespace linalg {
   template <typename T, std::size_t N>
   struct vec;
-}  // namespace math
+}  // namespace linalg
 
-#endif  // CPPMATH_VEC_BASE_H_
+#endif  // LINALG_VEC_BASE_H_

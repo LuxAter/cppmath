@@ -20,6 +20,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CPPMATH_COMPILED_LIB
-#error Please define CPPMATH_COMPILED_LIB to compile this file.
+#include "linalg/linalg.h"
+
+#ifndef LINALG_COMPILED_LIB
+#error Please define LINALG_COMPILED_LIB to compile this file.
 #endif

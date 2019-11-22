@@ -21,14 +21,14 @@
  * SOFTWARE.
  */
 
-#ifndef CPPMATH_VEC_TYPES_H_
-#define CPPMATH_VEC_TYPES_H_
+#ifndef LINALG_VEC_TYPES_H_
+#define LINALG_VEC_TYPES_H_
 
 #include <cstdlib>
 
 #include "vec_base.h"
 
-namespace math {
+namespace linalg {
   template <std::size_t N>
   using bvec = vec<bool, N>;
   template <std::size_t N>
@@ -60,6 +60,6 @@ namespace math {
   typedef vec<double, 2> dvec2;
   typedef vec<double, 3> dvec3;
   typedef vec<double, 4> dvec4;
-}  // namespace math
+}  // namespace linalg
 
-#endif  // CPPMATH_VEC_TYPES_H_
+#endif  // LINALG_VEC_TYPES_H_
