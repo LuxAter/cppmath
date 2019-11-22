@@ -30,13 +30,11 @@
 #include <type_traits>
 #include <utility>
 
-#include "export.h"
-
 namespace linalg {
   namespace sfinae {
 
     template <class T>
-    EXPORTED constexpr auto type_name() {
+    constexpr auto type_name() {
       std::string_view name, prefix, suffix;
 #ifdef __clang__
       name = __PRETTY_FUNCTION__;
@@ -57,7 +55,7 @@ namespace linalg {
     }
 
     template <class T, class S>
-    struct EXPORTED has_eq_impl {
+    struct has_eq_impl {
       template <class TT, class SS>
       constexpr static auto test(TT*)
           -> decltype(std::declval<TT>() == std::declval<SS>());

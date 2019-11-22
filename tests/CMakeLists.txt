@@ -16,6 +16,9 @@ function(prepare_test test_target lib)
       -Wfatal-errors>
       $<$<CXX_COMPILER_ID:MSVC>:/W4
       /WX>)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_compile_definitions(linalg PRIVATE -DDOCTEST_CONFIG_USE_STD_HEADERS)
+  endif()
   target_link_libraries(${test_target} PRIVATE ${lib})
   add_test(NAME ${test_target} COMMAND ${test_target})
 endfunction()
