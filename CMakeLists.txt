@@ -14,6 +14,7 @@ if(NOT DEFINED LINALG_MASTER_PROJECT)
     set(LINALG_MASTER_PROJECT FALSE)
   endif()
 endif()
+include(GNUInstallDirs)
 
 # ##############################################################################
 # OPTIONS
@@ -110,7 +111,6 @@ target_compile_definitions(linalg PUBLIC
                            $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:RELEASE>)
 set_target_properties(linalg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION
                                         ${PROJECT_VERSION_MAJOR})
-install(TARGETS ${PROJECT_NAME})
 
 # ##############################################################################
 # TARGET HEADER ONLY LIBRARY
@@ -140,7 +140,8 @@ if(LINALG_INSTALL)
   install(
     TARGETS linalg linalg_header_only
     EXPORT linalg
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()
 
 # ##############################################################################
