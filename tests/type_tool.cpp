@@ -76,15 +76,3 @@ TEST_CASE("has_geq") {
   CHECK_EQ(sfinae::has_geq<std::string>::value, true);
   CHECK_EQ(sfinae::has_geq<MyTestType>::value, false);
 }
-
-#include <iostream>
-TEST_CASE("timeer") {
-  std::cout << time_function<1000000000>([](int a, int b) { return a * b; }, 2,
-                                         5)
-                   .count()
-            << "\n";
-  std::cout << time_function<1000000000>(
-                   [](double a, double b) { return a * b; }, 2.0, 5.0)
-                   .count()
-            << "\n";
-}
