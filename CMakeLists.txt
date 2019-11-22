@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.8
+  VERSION 0.0.9
   LANGUAGES CXX)
 
 if(NOT DEFINED LINALG_MASTER_PROJECT)
@@ -132,10 +132,22 @@ if(LINALG_BUILD_TESTS OR LINALG_BUILD_TESTS_HO)
 endif()
 
 # ##############################################################################
+# INSTALL
+# ##############################################################################
+if(LINALG_INSTALL)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+          DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+  install(
+    TARGETS linalg linalg_header_only
+    EXPORT linalg
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+endif()
+
+# ##############################################################################
 # PACKAGING
 # ##############################################################################
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  set(CPACK_GENERATOR "STGZ;TGZ;ZIP")
+  set(CPACK_GENERATOR "TGZ;ZIP")
   set(CPACK_PACKAGE_VENDOR "LuxAter")
   set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
   set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -145,54 +157,3 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set(CPACK_MONOLITHIC_INSTALL TRUE)
   include(CPack)
 endif()
-
-# ------------------------------------------------------------------------------
-# ---------
-# Install
-# ------------------------------------------------------------------------------
-# ---------
-# if(CPPMATH_INSTALL) message(STATUS "Generating install") set(PROJECT_config_in
-# "${CMAKE_CURRENT_LIST_DIR}/cmake/cppmathConfig.cmake.in") set(PROJECT_config_out
-# "${CMAKE_CURRENT_BINARY_DIR}/cppmathConfig.cmake") set(config_targets_file
-# "cppmathConfigTargets.cmake") set(version_config_file
-# "${CMAKE_CURRENT_BINARY_DIR}/cppmathConfigVersion.cmake") set(export_dest_dir
-# "${CMAKE_INSTALL_LIBDIR}/cmake/cppmath") set(pkgconfig_install_dir
-# "${CMAKE_INSTALL_LIBDIR}/pkgconfig") set(pkg_config
-# "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc")
-#
-# # ----------------------------------------------------------------------------
-# # ----------- # Include files #
-# ---------------------------------------------------------------------------- #
-# ----------- install(DIRECTORY include/ DESTINATION
-# "${CMAKE_INSTALL_INCLUDEDIR}") install( TARGETS cppmath cppmath_header_only
-# EXPORT cppmath DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-#
-# # ----------------------------------------------------------------------------
-# # ----------- # Install pkg-config file #
-# ---------------------------------------------------------------------------- #
-# ----------- get_target_property(PKG_CONFIG_DEFINES cppmath
-# INTERFACE_COMPILE_DEFINITIONS) string(REPLACE ";" " -D" PKG_CONFIG_DEFINES
-# "${PKG_CONFIG_DEFINES}") string(CONCAT PKG_CONFIG_DEFINES "-D"
-# "${PKG_CONFIG_DEFINES}") configure_file("cmake/${PROJECT_NAME}.pc.in"
-# "${pkg_config}" @ONLY) install(FILES "${pkg_config}" DESTINATION
-# "${pkgconfig_install_dir}")
-#
-# # ----------------------------------------------------------------------------
-# # ----------- # Install CMake config files #
-# ---------------------------------------------------------------------------- #
-# ----------- install( EXPORT cppmath DESTINATION ${export_dest_dir} NAMESPACE
-# cppmath:: FILE ${config_targets_file})
-#
-# include(CMakePackageConfigHelpers) configure_file("${PROJECT_config_in}"
-# "${PROJECT_config_out}" @ONLY)
-#
-# write_basic_package_version_file("${version_config_file}" COMPATIBILITY
-# SameMajorVersion) install(FILES "${PROJECT_config_out}"
-# "${version_config_file}" DESTINATION "${export_dest_dir}")
-#
-# # ----------------------------------------------------------------------------
-# # ----------- # Support creation of installable packages #
-# ---------------------------------------------------------------------------- #
-# ----------- include(cmake/cppmathCPack.cmake)
-#
-# endif()
