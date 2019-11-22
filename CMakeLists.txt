@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.9
+  VERSION 0.0.10
   LANGUAGES CXX)
 
 if(NOT DEFINED LINALG_MASTER_PROJECT)
@@ -94,8 +94,13 @@ target_include_directories(
   linalg PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_compile_options(linalg PUBLIC -DLINALG_COMPILED_LIB)
-target_compile_options(linalg
-                       PRIVATE $<$<CONFIG:Debug>:-O0>$<$<CONFIG:Release>:-O3>)
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  target_compile_options(linalg PRIVATE /EHsc /Mtd /c)
+  target_compile_definitions(roukavici PRIVATE WIN_EXPORT)
+else()
+  target_compile_options(linalg
+                         PRIVATE $<$<CONFIG:Debug>:-O0>$<$<CONFIG:Release>:-O3>)
+endif()
 target_compile_options(
   linalg
   PRIVATE
