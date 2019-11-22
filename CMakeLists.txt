@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.10
+  VERSION 0.0.9
   LANGUAGES CXX)
 
 if(NOT DEFINED LINALG_MASTER_PROJECT)
@@ -29,7 +29,7 @@ option(STATIC_ANALYSIS "Enable static analysis" FALSE)
 # ##############################################################################
 # COMPILER
 # ##############################################################################
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

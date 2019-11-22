@@ -24,10 +24,9 @@
 #ifndef LINALG_TYPE_TOOLS_H_
 #define LINALG_TYPE_TOOLS_H_
 
-#include <cxxabi.h>
-
 #include <memory>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 
@@ -35,23 +34,24 @@ namespace linalg {
   namespace sfinae {
 
     template <class T>
-    std::string type_name() {
-      typedef typename std::remove_reference<T>::type TR;
-      std::unique_ptr<char, void (*)(void*)> own(
-#ifndef _MSC_VER
-          abi::__cxa_demangle(typeid(TR).name(), nullptr, nullptr, nullptr),
-#else
-          nullptr,
+    constexpr auto type_name() {
+      std::string_view name, prefix, suffix;
+#ifdef __clang__
+      name = __PRETTY_FUNCTION__;
+      prefix = "auto linalg::sfinae::type_name() [T = ";
+      suffix = "]";
+#elif defined(__GNUC__)
+      name = __PRETTY_FUNCTION__;
+      prefix = "constexpr auto linalg::sfinae::type_name() [with T = ";
+      suffix = "]";
+#elif defined(_MSC_VER)
+      name = __FUNCSIG__;
+      prefix = "auto __cdecl linalg::sfinae::type_name<";
+      suffix = ">(void)";
 #endif
-          std::free);
-      std::string r = own != nullptr ? own.get() : typeid(TR).name();
-      if (std::is_const<TR>::value) r += " const";
-      if (std::is_volatile<TR>::value) r += " volatile";
-      if (std::is_lvalue_reference<T>::value)
-        r += "&";
-      else if (std::is_rvalue_reference<T>::value)
-        r += "&&";
-      return r;
+      name.remove_prefix(prefix.size());
+      name.remove_suffix(suffix.size());
+      return name;
     }
 
     template <class T, class S>
