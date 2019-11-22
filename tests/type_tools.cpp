@@ -12,20 +12,6 @@ struct MyTestType {};
 
 TEST_CASE("type_name") {
   CHECK_EQ(sfinae::type_name<int>(), "int");
-  CHECK_EQ(
-      sfinae::type_name<std::vector<std::map<std::string, float>>>(),
-      "std::vector<std::map<std::__cxx11::basic_string<char, "
-      "std::char_traits<char>, std::allocator<char> >, float, "
-      "std::less<std::__cxx11::basic_string<char, std::char_traits<char>, "
-      "std::allocator<char> > >, "
-      "std::allocator<std::pair<std::__cxx11::basic_string<char, "
-      "std::char_traits<char>, std::allocator<char> > const, float> > >, "
-      "std::allocator<std::map<std::__cxx11::basic_string<char, "
-      "std::char_traits<char>, std::allocator<char> >, float, "
-      "std::less<std::__cxx11::basic_string<char, std::char_traits<char>, "
-      "std::allocator<char> > >, "
-      "std::allocator<std::pair<std::__cxx11::basic_string<char, "
-      "std::char_traits<char>, std::allocator<char> > const, float> > > > >");
   CHECK_EQ(sfinae::type_name<MyTestType>(), "MyTestType");
 }
 

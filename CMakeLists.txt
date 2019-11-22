@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.9
+  VERSION 0.0.10
   LANGUAGES CXX)
 
 if(NOT DEFINED LINALG_MASTER_PROJECT)
