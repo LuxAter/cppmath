@@ -4,14 +4,14 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.7
+  VERSION 0.0.8
   LANGUAGES CXX)
 
-if(NOT DEFINED LINALG_MASTER_proj)
+if(NOT DEFINED LINALG_MASTER_PROJECT)
   if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    set(LINALG_MASTER_proj TRUE)
+    set(LINALG_MASTER_PROJECT TRUE)
   else()
-    set(LINALG_MASTER_proj FALSE)
+    set(LINALG_MASTER_PROJECT FALSE)
   endif()
 endif()
 
@@ -19,12 +19,10 @@ endif()
 # OPTIONS
 # ##############################################################################
 option(LINALG_BUILD_SHARED "Build shared library" OFF)
-option(LINALG_BUILD_TESTS "Build tests" ${LINALG_MASTER_proj})
+option(LINALG_BUILD_TESTS "Build tests" ${LINALG_MASTER_PROJECT})
 option(LINALG_BUILD_TESTS_HO "Build tests using the header only version"
-       ${LINALG_MASTER_proj})
-option(LINALG_TEST_COVERAGE "Enable test coverage reporting"
-       ${LINALG_MASTER_proj})
-option(LINALG_INSTALL "Generate the install target" ${LINALG_MASTER_proj})
+       ${LINALG_MASTER_PROJECT})
+option(LINALG_INSTALL "Generate the install target" ${LINALG_MASTER_PROJECT})
 option(STATIC_ANALYSIS "Enable static analysis" FALSE)
 
 # ##############################################################################
@@ -38,8 +36,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # SOURCE
 # ##############################################################################
 set(SOURCE src/linalg.cpp)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${proj_NAME}/version.h.in"
-               "${CMAKE_CURRENT_SOURCE_DIR}/include/${proj_NAME}/version.h")
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h")
 set(LINALG_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(LINALG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -89,7 +88,7 @@ if(LINALG_BUILD_SHARED)
 else()
   add_library(linalg STATIC ${SOURCE})
 endif()
-add_library(${proj_NAME}::linalg ALIAS linalg)
+add_library(${PROJECT_NAME}::linalg ALIAS linalg)
 target_include_directories(
   linalg PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
@@ -109,15 +108,15 @@ target_compile_options(
     /WX>)
 target_compile_definitions(linalg PUBLIC
                            $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:RELEASE>)
-set_target_properties(linalg PROPERTIES VERSION ${proj_VERSION} SOVERSION
-                                        ${proj_VERSION_MAJOR})
-install(TARGETS ${proj_NAME})
+set_target_properties(linalg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION
+                                        ${PROJECT_VERSION_MAJOR})
+install(TARGETS ${PROJECT_NAME})
 
 # ##############################################################################
 # TARGET HEADER ONLY LIBRARY
 # ##############################################################################
 add_library(linalg_header_only INTERFACE)
-add_library(${proj_NAME}::header_only ALIAS linalg_header_only)
+add_library(${PROJECT_NAME}::header_only ALIAS linalg_header_only)
 target_include_directories(
   linalg_header_only
   INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
@@ -138,9 +137,9 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set(CPACK_GENERATOR "STGZ;TGZ;ZIP")
   set(CPACK_PACKAGE_VENDOR "LuxAter")
-  set(CPACK_PACKAGE_VERSION_MAJOR ${proj_VERSION_MAJOR})
-  set(CPACK_PACKAGE_VERSION_MINOR ${proj_VERSION_MINOR})
-  set(CPACK_PACKAGE_VERSION_PATCH ${proj_VERSION_PATCH})
+  set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+  set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+  set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
   set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
   set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
   set(CPACK_MONOLITHIC_INSTALL TRUE)
@@ -152,14 +151,14 @@ endif()
 # Install
 # ------------------------------------------------------------------------------
 # ---------
-# if(CPPMATH_INSTALL) message(STATUS "Generating install") set(proj_config_in
-# "${CMAKE_CURRENT_LIST_DIR}/cmake/cppmathConfig.cmake.in") set(proj_config_out
+# if(CPPMATH_INSTALL) message(STATUS "Generating install") set(PROJECT_config_in
+# "${CMAKE_CURRENT_LIST_DIR}/cmake/cppmathConfig.cmake.in") set(PROJECT_config_out
 # "${CMAKE_CURRENT_BINARY_DIR}/cppmathConfig.cmake") set(config_targets_file
 # "cppmathConfigTargets.cmake") set(version_config_file
 # "${CMAKE_CURRENT_BINARY_DIR}/cppmathConfigVersion.cmake") set(export_dest_dir
 # "${CMAKE_INSTALL_LIBDIR}/cmake/cppmath") set(pkgconfig_install_dir
 # "${CMAKE_INSTALL_LIBDIR}/pkgconfig") set(pkg_config
-# "${CMAKE_BINARY_DIR}/${proj_NAME}.pc")
+# "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc")
 #
 # # ----------------------------------------------------------------------------
 # # ----------- # Include files #
@@ -174,7 +173,7 @@ endif()
 # ----------- get_target_property(PKG_CONFIG_DEFINES cppmath
 # INTERFACE_COMPILE_DEFINITIONS) string(REPLACE ";" " -D" PKG_CONFIG_DEFINES
 # "${PKG_CONFIG_DEFINES}") string(CONCAT PKG_CONFIG_DEFINES "-D"
-# "${PKG_CONFIG_DEFINES}") configure_file("cmake/${proj_NAME}.pc.in"
+# "${PKG_CONFIG_DEFINES}") configure_file("cmake/${PROJECT_NAME}.pc.in"
 # "${pkg_config}" @ONLY) install(FILES "${pkg_config}" DESTINATION
 # "${pkgconfig_install_dir}")
 #
@@ -184,11 +183,11 @@ endif()
 # ----------- install( EXPORT cppmath DESTINATION ${export_dest_dir} NAMESPACE
 # cppmath:: FILE ${config_targets_file})
 #
-# include(CMakePackageConfigHelpers) configure_file("${proj_config_in}"
-# "${proj_config_out}" @ONLY)
+# include(CMakePackageConfigHelpers) configure_file("${PROJECT_config_in}"
+# "${PROJECT_config_out}" @ONLY)
 #
 # write_basic_package_version_file("${version_config_file}" COMPATIBILITY
-# SameMajorVersion) install(FILES "${proj_config_out}"
+# SameMajorVersion) install(FILES "${PROJECT_config_out}"
 # "${version_config_file}" DESTINATION "${export_dest_dir}")
 #
 # # ----------------------------------------------------------------------------
