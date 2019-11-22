@@ -2,6 +2,8 @@
 # Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.2)
+project(cppmath VERSION 0.0.2 LANGUAGES CXX)
+
 
 #---------------------------------------------------------------------------------------
 # Start cppmath project
