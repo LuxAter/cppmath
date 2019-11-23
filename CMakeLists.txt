@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(
   linalg
-  VERSION 0.0.12
+  VERSION 0.0.13
   LANGUAGES CXX)
 
 if(NOT DEFINED LINALG_MASTER_PROJECT)
@@ -24,7 +24,7 @@ option(LINALG_BUILD_TESTS "Build tests" ${LINALG_MASTER_PROJECT})
 option(LINALG_BUILD_TESTS_HO "Build tests using the header only version"
        ${LINALG_MASTER_PROJECT})
 option(LINALG_INSTALL "Generate the install target" ${LINALG_MASTER_PROJECT})
-option(STATIC_ANALYSIS "Enable static analysis" FALSE)
+option(STATIC_ANALYSIS "Enable static analysis" OFF)
 
 # ##############################################################################
 # COMPILER

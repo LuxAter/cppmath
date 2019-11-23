@@ -62,3 +62,11 @@ TEST_CASE("has_geq") {
   CHECK_EQ(sfinae::has_geq<std::string>::value, true);
   CHECK_EQ(sfinae::has_geq<MyTestType>::value, false);
 }
+
+TEST_CASE("has_plus") {
+  CHECK_EQ(sfinae::has_plus<int>::value, true);
+  CHECK_EQ(sfinae::has_plus<int, float>::value, true);
+  CHECK_EQ(sfinae::has_plus<int, std::string>::value, false);
+  CHECK_EQ(sfinae::has_plus<std::string>::value, true);
+  CHECK_EQ(sfinae::has_plus<MyTestType>::value, false);
+}

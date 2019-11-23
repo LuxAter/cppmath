@@ -1,5 +1,5 @@
 project(tests LANGUAGES CXX)
-set(TESTS_SOURCES main.cpp type_tools.cpp)
+set(TESTS_SOURCES main.cpp type_tools.cpp vec2.cpp)
 
 enable_testing()
 

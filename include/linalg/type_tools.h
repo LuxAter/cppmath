@@ -30,6 +30,21 @@
 #include <type_traits>
 #include <utility>
 
+#define OPERATOR_SFINAE(name, op)                                            \
+  template <class T, class S>                                                \
+  struct has_##name##_impl {                                                 \
+    template <class TT, class SS>                                            \
+    constexpr static auto test(TT*)                                          \
+        -> decltype(std::declval<TT>() op std::declval<SS>());               \
+    template <typename, typename>                                            \
+    constexpr static auto test(...) -> std::false_type;                      \
+                                                                             \
+    using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type; \
+  };                                                                         \
+                                                                             \
+  template <class T, class S = T>                                            \
+  struct has_##name : has_##name##_impl<T, S>::type {};
+
 namespace linalg {
   namespace sfinae {
 
@@ -54,89 +69,16 @@ namespace linalg {
       return name;
     }
 
-    template <class T, class S>
-    struct has_eq_impl {
-      template <class TT, class SS>
-      constexpr static auto test(TT*)
-          -> decltype(std::declval<TT>() == std::declval<SS>());
-      template <typename, typename>
-      constexpr static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_eq : has_eq_impl<T, S>::type {};
-
-    template <class T, class S>
-    struct has_neq_impl {
-      template <class TT, class SS>
-      static auto test(TT*)
-          -> decltype(std::declval<TT>() != std::declval<SS>());
-      template <typename, typename>
-      static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_neq : has_neq_impl<T, S>::type {};
-
-    template <class T, class S>
-    struct has_lt_impl {
-      template <class TT, class SS>
-      static auto test(TT*)
-          -> decltype(std::declval<TT>() < std::declval<SS>());
-      template <typename, typename>
-      static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_lt : has_lt_impl<T, S>::type {};
-
-    template <class T, class S>
-    struct has_gt_impl {
-      template <class TT, class SS>
-      static auto test(TT*)
-          -> decltype(std::declval<TT>() > std::declval<SS>());
-      template <typename, typename>
-      static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_gt : has_gt_impl<T, S>::type {};
-
-    template <class T, class S>
-    struct has_leq_impl {
-      template <class TT, class SS>
-      static auto test(TT*)
-          -> decltype(std::declval<TT>() <= std::declval<SS>());
-      template <typename, typename>
-      static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_leq : has_leq_impl<T, S>::type {};
-
-    template <class T, class S>
-    struct has_geq_impl {
-      template <class TT, class SS>
-      static auto test(TT*)
-          -> decltype(std::declval<TT>() >= std::declval<SS>());
-      template <typename, typename>
-      static auto test(...) -> std::false_type;
-
-      using type = typename std::is_same<bool, decltype(test<T, S>(0))>::type;
-    };
-
-    template <class T, class S = T>
-    struct has_geq : has_geq_impl<T, S>::type {};
+    OPERATOR_SFINAE(eq, ==)
+    OPERATOR_SFINAE(neq, !=)
+    OPERATOR_SFINAE(lt, <)
+    OPERATOR_SFINAE(gt, >)
+    OPERATOR_SFINAE(leq, >=)
+    OPERATOR_SFINAE(geq, <=)
+    OPERATOR_SFINAE(plus, +)
+    OPERATOR_SFINAE(minus, -)
+    OPERATOR_SFINAE(times, *)
+    OPERATOR_SFINAE(divide, /)
 
   }  // namespace sfinae
 }  // namespace linalg

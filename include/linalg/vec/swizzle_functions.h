@@ -27,125 +27,167 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#define SWIZZLE_2_BASE(a, b)                                          \
-  inline swizzle<value_type, 2> a##a() { return {a, a}; }             \
-  inline swizzle<const value_type, 2> a##a() const { return {a, a}; } \
-  inline swizzle<value_type, 2> a##b() { return {a, b}; }             \
-  inline swizzle<const value_type, 2> a##b() const { return {a, b}; } \
-  inline swizzle<value_type, 2> b##a() { return {b, a}; }             \
-  inline swizzle<const value_type, 2> b##a() const { return {b, a}; } \
-  inline swizzle<value_type, 2> b##b() { return {b, b}; }             \
-  inline swizzle<const value_type, 2> b##b() const { return {b, b}; }
+#define SWIZZLE_2_BASE(a, b)                           \
+  inline vec<value_type&, 2> a##b() { return {a, b}; } \
+  inline vec<const value_type&, 2> a##b() const { return {a, b}; }
+#define SWIZZLE_3_BASE(a, b, c)                              \
+  inline vec<value_type&, 3> a##b##c() { return {a, b, c}; } \
+  inline vec<const value_type&, 3> a##b##c() const { return {a, b, c}; }
+#define SWIZZLE_4_BASE(a, b, c, d)                                 \
+  inline vec<value_type&, 4> a##b##c##d() { return {a, b, c, d}; } \
+  inline vec<const value_type&, 4> a##b##c##d() const { return {a, b, c, d}; }
 
-#define SWIZZLE_2_2()  \
-  SWIZZLE_2_BASE(x, y) \
-  SWIZZLE_2_BASE(r, g)
+#define SWIZZLE_12_BASE(a) SWIZZLE_2_BASE(a, a)
 
-namespace linalg {
-  template <typename T, std::size_t N>
-  struct vec;
-  template <typename T, std::size_t N>
-  struct swizzle;
+#define SWIZZLE_13_BASE(a) SWIZZLE_3_BASE(a, a, a)
 
-  template <typename T>
-  struct swizzle<T, 2> {
-    typedef T& value_type;
-    typedef std::size_t size_type;
+#define SWIZZLE_14_BASE(a) SWIZZLE_4_BASE(a, a, a, a)
 
-    swizzle(const swizzle<T, 2>& copy) : x(copy.x), y(copy.y) {}
-    swizzle(value_type& x, value_type& y) : x(x), y(y) {}
-    static constexpr size_type length() { return 2; }
-    static constexpr size_type size() { return 2; }
+#define SWIZZLE_22_BASE(a, b) \
+  SWIZZLE_2_BASE(a, b)        \
+  SWIZZLE_2_BASE(b, a)
 
-    template <typename U,
-              typename = std::enable_if_t<std::is_convertible<U, T>::value>>
-    swizzle<T, 2>& operator=(const U& v) {
-      x = static_cast<T>(v);
-      y = static_cast<T>(v);
-      return *this;
-    }
-    swizzle<T, 2>& operator=(const T& v) {
-      x = v;
-      y = v;
-      return *this;
-    }
-    template <
-        typename U, std::size_t N,
-        typename = std::enable_if_t<std::is_convertible<U, T>::value && N >= 2>>
-    swizzle<T, 2>& operator=(const vec<U, N>& v) {
-      x = static_cast<T>(v.x);
-      y = static_cast<T>(v.y);
-      return *this;
-    }
-    template <std::size_t N, typename = std::enable_if_t<N >= 2>>
-    swizzle<T, 2>& operator=(const vec<T, N>& v) {
-      x = v.x;
-      y = v.y;
-      return *this;
-    }
-    swizzle<T, 2>& operator=(const vec<T, 2>& v) {
-      x = v.x;
-      y = v.y;
-      return *this;
-    }
-    template <
-        typename U, std::size_t N,
-        typename = std::enable_if_t<std::is_convertible<U, T>::value && N >= 2>>
-    swizzle<T, 2>& operator=(const swizzle<U, N>& v) {
-      x = static_cast<T>(v.x);
-      y = static_cast<T>(v.y);
-      return *this;
-    }
-    template <std::size_t N, typename = std::enable_if_t<N >= 2>>
-    swizzle<T, 2>& operator=(const swizzle<T, N>& v) {
-      x = v.x;
-      y = v.y;
-      return *this;
-    }
-    swizzle<T, 2>& operator=(const swizzle<T, 2>& v) {
-      x = v.x;
-      y = v.y;
-      return *this;
-    }
+#define SWIZZLE_23_BASE(a, b) \
+  SWIZZLE_3_BASE(a, a, b)     \
+  SWIZZLE_3_BASE(a, b, a)     \
+  SWIZZLE_3_BASE(a, b, b)     \
+  SWIZZLE_3_BASE(b, a, a)     \
+  SWIZZLE_3_BASE(b, a, b)     \
+  SWIZZLE_3_BASE(b, b, a)
 
-    value_type& operator[](const size_type& i) {
-      switch (i) {
-        case 0:
-          return x;
-        case 1:
-          return y;
-        default:
-          throw std::out_of_range(
-              "swizzle<T,2>::operator[] : index is out of range");
-      }
-    }
-    value_type operator[](const size_type& i) const {
-      switch (i) {
-        case 0:
-          return x;
-        case 1:
-          return y;
-        default:
-          throw std::out_of_range(
-              "swizzle<T,2>::operator[] : index is out of range");
-      }
-    }
+#define SWIZZLE_24_BASE(a, b) \
+  SWIZZLE_4_BASE(a, a, a, b)  \
+  SWIZZLE_4_BASE(a, a, b, a)  \
+  SWIZZLE_4_BASE(a, a, b, b)  \
+  SWIZZLE_4_BASE(a, b, a, a)  \
+  SWIZZLE_4_BASE(a, b, a, b)  \
+  SWIZZLE_4_BASE(a, b, b, a)  \
+  SWIZZLE_4_BASE(a, b, b, b)  \
+  SWIZZLE_4_BASE(b, a, a, a)  \
+  SWIZZLE_4_BASE(b, a, a, b)  \
+  SWIZZLE_4_BASE(b, a, b, a)  \
+  SWIZZLE_4_BASE(b, a, b, b)  \
+  SWIZZLE_4_BASE(b, b, a, a)  \
+  SWIZZLE_4_BASE(b, b, a, b)  \
+  SWIZZLE_4_BASE(b, b, b, a)
 
-    template <
-        typename U, std::size_t N,
-        typename = std::enable_if_t<std::is_convertible<T, U>::value && N >= 2>>
-    operator vec<U, N>() const {
-      return {static_cast<U>(x), static_cast<U>(y)};
-    }
+#define SWIZZLE_33_BASE(a, b, c) \
+  SWIZZLE_3_BASE(a, b, c)        \
+  SWIZZLE_3_BASE(a, c, b)        \
+  SWIZZLE_3_BASE(b, a, c)        \
+  SWIZZLE_3_BASE(b, c, a)        \
+  SWIZZLE_3_BASE(c, b, a)        \
+  SWIZZLE_3_BASE(c, a, b)
 
-    value_type x, y;
-  };
-#ifdef LINALG_OSTREAM_OPERATOR
-  template <typename T>
-  inline std::ostream& operator<<(std::ostream& out, const swizzle<T, 2>& rhs) {
-    return out << '<' << rhs.x << ',' << rhs.y << '>';
-  }
-#endif
-}  // namespace linalg
+#define SWIZZLE_34_BASE(a, b, c) \
+  SWIZZLE_4_BASE(a, a, b, c)     \
+  SWIZZLE_4_BASE(a, a, c, b)     \
+  SWIZZLE_4_BASE(a, b, a, c)     \
+  SWIZZLE_4_BASE(a, b, b, c)     \
+  SWIZZLE_4_BASE(a, b, c, a)     \
+  SWIZZLE_4_BASE(a, b, c, b)     \
+  SWIZZLE_4_BASE(a, b, c, c)     \
+  SWIZZLE_4_BASE(a, c, a, b)     \
+  SWIZZLE_4_BASE(a, c, b, a)     \
+  SWIZZLE_4_BASE(a, c, b, b)     \
+  SWIZZLE_4_BASE(a, c, b, c)     \
+  SWIZZLE_4_BASE(a, c, c, b)     \
+  SWIZZLE_4_BASE(b, a, a, c)     \
+  SWIZZLE_4_BASE(b, a, b, c)     \
+  SWIZZLE_4_BASE(b, a, c, a)     \
+  SWIZZLE_4_BASE(b, a, c, b)     \
+  SWIZZLE_4_BASE(b, a, c, c)     \
+  SWIZZLE_4_BASE(b, b, a, c)     \
+  SWIZZLE_4_BASE(b, b, c, a)     \
+  SWIZZLE_4_BASE(b, c, a, a)     \
+  SWIZZLE_4_BASE(b, c, a, b)     \
+  SWIZZLE_4_BASE(b, c, a, c)     \
+  SWIZZLE_4_BASE(b, c, b, a)     \
+  SWIZZLE_4_BASE(b, c, c, a)     \
+  SWIZZLE_4_BASE(c, a, a, b)     \
+  SWIZZLE_4_BASE(c, a, b, a)     \
+  SWIZZLE_4_BASE(c, a, b, b)     \
+  SWIZZLE_4_BASE(c, a, b, c)     \
+  SWIZZLE_4_BASE(c, a, c, b)     \
+  SWIZZLE_4_BASE(c, b, a, a)     \
+  SWIZZLE_4_BASE(c, b, a, b)     \
+  SWIZZLE_4_BASE(c, b, a, c)     \
+  SWIZZLE_4_BASE(c, b, b, a)     \
+  SWIZZLE_4_BASE(c, b, c, a)     \
+  SWIZZLE_4_BASE(c, c, a, b)     \
+  SWIZZLE_4_BASE(c, c, b, a)
+
+#define SWIZZLE_44_BASE()    \
+  SWIZZLE_4_BASE(a, b, c, d) \
+  SWIZZLE_4_BASE(a, b, d, c) \
+  SWIZZLE_4_BASE(a, c, b, d) \
+  SWIZZLE_4_BASE(a, c, d, b) \
+  SWIZZLE_4_BASE(a, d, b, c) \
+  SWIZZLE_4_BASE(a, d, c, b) \
+  SWIZZLE_4_BASE(b, a, c, d) \
+  SWIZZLE_4_BASE(b, a, d, c) \
+  SWIZZLE_4_BASE(b, c, a, d) \
+  SWIZZLE_4_BASE(b, c, d, a) \
+  SWIZZLE_4_BASE(b, d, a, c) \
+  SWIZZLE_4_BASE(b, d, c, a) \
+  SWIZZLE_4_BASE(c, b, a, d) \
+  SWIZZLE_4_BASE(c, b, d, a) \
+  SWIZZLE_4_BASE(c, a, b, d) \
+  SWIZZLE_4_BASE(c, a, d, b) \
+  SWIZZLE_4_BASE(c, d, b, a) \
+  SWIZZLE_4_BASE(c, d, a, b) \
+  SWIZZLE_4_BASE(d, b, c, a) \
+  SWIZZLE_4_BASE(d, b, a, c) \
+  SWIZZLE_4_BASE(d, c, b, a) \
+  SWIZZLE_4_BASE(d, c, a, b) \
+  SWIZZLE_4_BASE(d, a, b, c) \
+  SWIZZLE_4_BASE(d, a, c, b)
+
+#define SWIZZLE_2()     \
+  SWIZZLE_22_BASE(x, y) \
+  SWIZZLE_23_BASE(x, y) \
+  SWIZZLE_24_BASE(x, y)
+
+#define SWIZZLE_3()        \
+  SWIZZLE_22_BASE(x, y)    \
+  SWIZZLE_23_BASE(x, y)    \
+  SWIZZLE_24_BASE(x, y)    \
+  SWIZZLE_22_BASE(x, z)    \
+  SWIZZLE_23_BASE(x, z)    \
+  SWIZZLE_24_BASE(x, z)    \
+  SWIZZLE_22_BASE(y, z)    \
+  SWIZZLE_23_BASE(y, z)    \
+  SWIZZLE_24_BASE(y, z)    \
+  SWIZZLE_33_BASE(x, y, z) \
+  SWIZZLE_34_BASE(x, y, z)
+
+#define SWIZZLE_4()        \
+  SWIZZLE_22_BASE(x, y)    \
+  SWIZZLE_23_BASE(x, y)    \
+  SWIZZLE_24_BASE(x, y)    \
+  SWIZZLE_22_BASE(x, z)    \
+  SWIZZLE_23_BASE(x, z)    \
+  SWIZZLE_24_BASE(x, z)    \
+  SWIZZLE_22_BASE(x, w)    \
+  SWIZZLE_23_BASE(x, w)    \
+  SWIZZLE_24_BASE(x, w)    \
+  SWIZZLE_22_BASE(y, z)    \
+  SWIZZLE_23_BASE(y, z)    \
+  SWIZZLE_24_BASE(y, z)    \
+  SWIZZLE_22_BASE(y, w)    \
+  SWIZZLE_23_BASE(y, w)    \
+  SWIZZLE_24_BASE(y, w)    \
+  SWIZZLE_22_BASE(z, w)    \
+  SWIZZLE_23_BASE(z, w)    \
+  SWIZZLE_24_BASE(z, w)    \
+  SWIZZLE_33_BASE(x, y, z) \
+  SWIZZLE_33_BASE(x, y, w) \
+  SWIZZLE_33_BASE(x, z, w) \
+  SWIZZLE_33_BASE(y, z, w) \
+  SWIZZLE_34_BASE(x, y, z) \
+  SWIZZLE_34_BASE(x, y, w) \
+  SWIZZLE_34_BASE(x, z, w) \
+  SWIZZLE_34_BASE(y, z, w) \
+  SWIZZLE_44_BASE(x, y, z, w)
 
 #endif  // LINALG_SWIZZLE_FUNCTIONS_H_

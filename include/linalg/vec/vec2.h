@@ -30,8 +30,11 @@
 #ifdef LINALG_OSTREAM_OPERATOR
 #include <iostream>
 #endif
+#ifdef LINALG_SWIZZLE_FUNCTION
 #include "swizzle_functions.h"
+#endif
 
+#include "../type_tools.h"
 #include "vec_base.h"
 
 namespace linalg {
@@ -46,16 +49,23 @@ namespace linalg {
     vec() : x(), y() {}
     vec(const value_type& v) : x(v), y(v) {}
     vec(const value_type& x, const value_type& y) : x(x), y(y) {}
-    // vec(const value_type&& x, const value_type&& y) : x(x), y(y) {}
+    template <
+        typename U, std::size_t N,
+        typename = std::enable_if_t<std::is_convertible<U, T>::value && N >= 2>>
+    vec(const vec<U, N>& copy) : x(copy.x), y(copy.y) {}
 
-// #ifdef LINALG_SWIZZLE_FUNCTION
-    SWIZZLE_2_2()
-    /* TODO: Add swizzle function <07-11-19, Arden Rasmussen> */
-// #endif
+    constexpr value_type& r() { return x; }
+    constexpr const value_type& r() const { return x; }
+    constexpr value_type& g() { return y; }
+    constexpr const value_type& g() const { return y; }
+
+#ifdef LINALG_SWIZZLE_FUNCTION
+    SWIZZLE_2()
+#endif
 
     static constexpr size_type length() { return 2; }
     static constexpr size_type size() { return 2; }
-    value_type& operator[](const size_type& i) {
+    constexpr value_type& operator[](const size_type& i) {
       switch (i) {
         case 0:
           return x;
@@ -66,7 +76,7 @@ namespace linalg {
               "vec2<T>::operator[] : index is out of range");
       }
     }
-    const value_type& operator[](const size_type& i) const {
+    constexpr const value_type& operator[](const size_type& i) const {
       switch (i) {
         case 0:
           return x;
@@ -78,13 +88,92 @@ namespace linalg {
       }
     }
 
-    union {
-      value_type x, r;
-    };
-    union {
-      value_type y, g;
-    };
+    value_type x, y;
   };
+
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_eq<T, U>::value>>
+  constexpr inline bool operator==(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_eq<T, U>::value>>
+  constexpr inline bool operator!=(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return !(lhs == rhs);
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_lt<T, U>::value>>
+  constexpr inline bool operator<(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return lhs.x < rhs.x || (!(rhs.x < lhs.x) && lhs.y < rhs.y);
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_lt<T, U>::value>>
+  constexpr inline bool operator>(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return rhs < lhs;
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_lt<T, U>::value>>
+  constexpr inline bool operator<=(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return !(rhs < lhs);
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<sfinae::has_lt<T, U>::value>>
+  constexpr inline bool operator>=(const vec<T, 2>& lhs, const vec<U, 2>& rhs) {
+    return !(lhs < rhs);
+  }
+
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value>>
+                                        
+  constexpr inline vec<T, 2> operator+(const vec<T, 2>& lhs, const U& rhs) {
+    return {lhs.x + rhs, lhs.y + rhs};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator+(const vec<T, 2>& lhs,
+                                       const vec<U, 2>& rhs) {
+    return {lhs.x + rhs.x, lhs.y + rhs.y};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator-(const vec<T, 2>& lhs, const U& rhs) {
+    return {lhs.x - rhs, lhs.y - rhs};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator-(const vec<T, 2>& lhs,
+                                       const vec<U, 2>& rhs) {
+    return {lhs.x - rhs.x, lhs.y - rhs.y};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator*(const vec<T, 2>& lhs, const U& rhs) {
+    return {lhs.x * rhs, lhs.y * rhs};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator*(const vec<T, 2>& lhs,
+                                       const vec<U, 2>& rhs) {
+    return {lhs.x * rhs.x, lhs.y * rhs.y};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator/(const vec<T, 2>& lhs, const U& rhs) {
+    return {lhs.x / rhs, lhs.y / rhs};
+  }
+  template <typename T, typename U,
+            typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                        sfinae::has_plus<T, U>::value>>
+  constexpr inline vec<T, 2> operator/(const vec<T, 2>& lhs,
+                                       const vec<U, 2>& rhs) {
+    return {lhs.x / rhs.x, lhs.y / rhs.y};
+  }
 
 #ifdef LINALG_OSTREAM_OPERATOR
   template <typename T>
